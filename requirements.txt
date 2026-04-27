@@ -1,0 +1,9 @@
+scenedetect
+opencv-python
+yt-dlp
+ollama
+ffmpeg
+numpy
+tqdm
+piper-tts
+srt

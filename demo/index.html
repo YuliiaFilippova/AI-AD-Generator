@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Accessible Video Demo</title>
+<p>This demo shows automatically generated audio descriptions for accessibility.
+Users can switch between original audio and audio-described version.
+</p>
+
+<div class="controls">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: #f5f5f5;
+    }
+
+    h1 {
+        margin-top: 30px;
+    }
+
+    .controls {
+        margin: 20px;
+    }
+
+    video {
+        width: 720px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    select {
+        padding: 8px;
+        font-size: 14px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Automatic Audio Description Demo</h1>
+
+<div class="controls">
+    <label>Playback mode:</label>
+    <select id="mode" onchange="switchVideo()">
+        <option value="original">Original</option>
+        <option value="ad">With Audio Description</option>
+    </select>
+</div>
+
+<video id="player" controls>
+    <source src="video.mp4" type="video/mp4">
+    <track label="Audio Description Subtitles" kind="subtitles" srclang="en" src="subtitles.vtt" default>
+</video>
+
+<script>
+function switchVideo() {
+    const player = document.getElementById("player");
+    const mode = document.getElementById("mode").value;
+
+    let currentTime = player.currentTime;
+    let isPlaying = !player.paused;
+
+    if (mode === "original") {
+        player.src = "video.mp4";
+    } else {
+        player.src = "video_with_ad.mp4";
+    }
+
+    player.load();
+
+    player.currentTime = currentTime;
+
+    if (isPlaying) {
+        player.play();
+    }
+}
+</script>
+
+</body>
+</html>
