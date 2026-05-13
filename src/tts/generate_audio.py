@@ -6,21 +6,10 @@ from datetime import timedelta
 from piper import PiperVoice
 import subprocess
 
+ROOT_DIR = Path(__file__).resolve().parents[2]
 
-MODEL_PATH = "models/en_GB-alba-medium.onnx"
-CONFIG_PATH = "models/en_GB-alba-medium.onnx.json"
-
-import srt
-import wave
-import os
-from pathlib import Path
-from datetime import timedelta
-from piper import PiperVoice
-import subprocess
-
-
-MODEL_PATH = "models/en_GB-alba-medium.onnx"
-CONFIG_PATH = "models/en_GB-alba-medium.onnx.json"
+MODEL_PATH = ROOT_DIR / "models" / "en_GB-alba-medium.onnx"
+CONFIG_PATH = ROOT_DIR / "models" / "en_GB-alba-medium.onnx.json"
 
 GLOBAL_OFFSET = 1.0   # ⏱ delay at start (seconds)
 AD_VOLUME = 6.0       # 🔊 boost AD loudness
@@ -28,7 +17,7 @@ AD_VOLUME = 6.0       # 🔊 boost AD loudness
 def time_to_seconds(t: timedelta):
     return t.total_seconds()
 
-def generate_ad_audio(srt_path, output_path="data/output/ad_track.wav"):
+def generate_ad_audio(srt_path, output_path):
     # Load subtitles
     with open(srt_path, "r") as f:
         subtitles = list(srt.parse(f.read()))
@@ -36,8 +25,12 @@ def generate_ad_audio(srt_path, output_path="data/output/ad_track.wav"):
     # Load Piper model
     voice = PiperVoice.load(MODEL_PATH, config_path=CONFIG_PATH)
 
-    temp_dir = Path("data/output/temp")
+    output_path = Path(output_path)
+    temp_dir = output_path.parent / "temp"
     temp_dir.mkdir(parents=True, exist_ok=True)
+
+    #temp_dir = Path("data/output/temp")
+    #temp_dir.mkdir(parents=True, exist_ok=True)
 
     wav_files = []
 

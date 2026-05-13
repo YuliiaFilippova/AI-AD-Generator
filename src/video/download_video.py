@@ -3,26 +3,19 @@ import shutil
 import yt_dlp
 
 
-def download_video(url):
-    # Main folder
-    os.makedirs("data/video", exist_ok=True)
-    os.makedirs("demo", exist_ok=True)
+def download_video(url, output_path):
 
-    path = "data/video/video.mp4"
+    # create parent directory
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
     ydl_opts = {
-        "outtmpl": path,
+        "outtmpl": output_path,
         "format": "mp4"
     }
 
-    # Download once
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
-    # Copy to demo
-    demo_path = "demo/video.mp4"
-    shutil.copy(path, demo_path)
+    print(f"Video saved to {output_path}")
 
-    print(f"Video saved to {path} and copied to {demo_path}")
-
-    return path
+    return output_path

@@ -2,9 +2,9 @@ import os
 import cv2
 
 
-def extract_keyframes(video_path, scenes):
-
-    os.makedirs("data/frames", exist_ok=True)
+def extract_keyframes(video_path, scenes, output_dir):
+    os.makedirs(output_dir, exist_ok=True)
+    #os.makedirs("data/frames", exist_ok=True)
 
     cap = cv2.VideoCapture(video_path)
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -17,10 +17,11 @@ def extract_keyframes(video_path, scenes):
 
         duration = end - start
 
-        # 🔥 adaptive number of frames
+        # adaptive number of frames
         num_frames = min(5, max(3, int(duration / 2)))
+        #num_frames = int(duration)
 
-        # 🔥 evenly spaced timestamps
+        # evenly spaced timestamps
         timestamps = [
             start + (duration * k) / (num_frames - 1)
             for k in range(num_frames)
@@ -39,7 +40,7 @@ def extract_keyframes(video_path, scenes):
             ret, frame = cap.read()
 
             if ret:
-                path = f"data/frames/scene_{i}_{j}.jpg"
+                path = os.path.join(output_dir, f"scene_{i}_frame_{j}.jpg")
                 cv2.imwrite(path, frame)
                 frames.append(path)
 

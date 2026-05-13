@@ -1,56 +1,76 @@
 import ollama
+#Semantic context (from metadata):
+#{semantic_context}
 
+#Global context:
+#{global_context}
+#Use global context ONLY to keep people, setting and recurring objects consistent.
+#Do not copy actions from global context unless they are also in the CURRENT raw description.
 
-def summarize_scene(descriptions, previous_summary, max_words):
+def generate_subtitle(current_description, previous_subtitles, max_words, local_context):
 
-    curr_text = "\n".join(descriptions)
+    history = "\n".join(previous_subtitles[-3:])  # last 3 only
+
     prompt = f"""
-You are writing audio descriptions for a short silent video for visually impaired people.
+You are writing audio descriptions for a video for blind and visually impaired viewers.
 
-Previous scene description:
-{previous_summary}
+CURRENT SCENE:
+{current_description}
 
-Current scene visual information:
-{curr_text}
+PREVIOUS SUBTITLES:
+{history}
+Do not restate these previous facts using different words.
 
-Write ONE short sentence describing only what is NEW in the current scene.
+PREVIOUS RAW CONTEXT:
+{local_context}
+Use this only to keep names/pronouns consistent. Do not copy actions or objects from it.
 
-Requirements:
-- Do not repeat previous information
-- Do not use the word "now", "still", etc
-- Be concise and natural (max {max_words} words)
-- Do not guess
-- Describe only clearly visible information
-- Use pronouns for previously introduced people when possible
-- Do not mention "image", "video", "frame", "scene", "screenshot", "screen", etc
+TASK:
+Write ONE short sentence describing ONLY the CURRENT SCENE.
 
-If there is no meaningful change, output: ""
-Output only one sentence.
+IMPORTANT:
+- The CURRENT SCENE is the source of truth.
+- Use PREVIOUS SUBTITLES only to avoid repetition.
+- Use PREVIOUS RAW CONTEXT only for continuity:
+  - same person
+  - pronouns
+  - stable clothing
+- NEVER copy actions or objects from PREVIOUS RAW CONTEXT unless they are visible in CURRENT SCENE.
 
-Example:
-Previous: A man enters the room.
-Current: The man stands near a table and looks around.
-Output: He stands by the table and looks around.
+RULES:
+- Preserve important visible details from CURRENT SCENE.
+- Do not invent emotions, intentions or atmosphere.
+- Do not infer things not clearly visible.
+- Do not mention black background
+- Do not add cinematic language.
+- Do not describe lighting unless clearly important.
+- Do not use words like:
+  "appears", "seems", "possibly", "likely", "contemplatively", "engaged".
+- Prefer concrete actions and objects.
+- Use simple present tense.
+- Use English language.
+- Use natural pronouns when identity is clear.
+- Mention clothing only:
+  - when first introducing a person
+  - or when needed for clarity.
+- Keep wording natural and concise.
+- Avoid repeating previous subtitles using different wording.
+- Include visible text only if important.
+- Output ONLY the final sentence.
+- Maximum {max_words} words.
 """
 
+    # These two models are much better! Should work well when run on cuda
+    #model = "qwen2.5:32b", # ollama pull qwen2.5:32b
+    #model = "qwen2.5:72b", # ollama pull qwen2.5:72b
     response = ollama.chat(
-        #model="mistral",
-        #model="qwen2.5:3b",
-        model="llama3.1:8b",
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
+        model="qwen2.5:14b",
+        messages=[{"role": "user", "content": prompt}],
         options={
-            "num_predict": 30,
-            "temperature": 0.2,
-            "top_p": 0.9,
-            "repeat_penalty": 1.2
+            "num_predict": 80,
+            "temperature": 0.1,
+            "repeat_penalty": 1.3
         }
     )
 
-    sentence = response["message"]["content"].strip()
-
-    return sentence
-
-
-
+    return response["message"]["content"].strip()
