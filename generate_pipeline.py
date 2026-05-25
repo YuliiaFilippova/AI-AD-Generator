@@ -15,6 +15,7 @@ from src.video.download_video import download_video
 from src.scenes.detect_scenes import split_by_time
 from src.frames.extract_keyframes import extract_keyframes
 from src.vlm.gwen_describe import describe_scene
+from src.utils.similarity import are_similar
 from src.llm.summarize_scene import generate_subtitle
 from src.utils.timing import max_words
 from src.subtitles.create_srt import create_srt
@@ -98,6 +99,7 @@ def run_pipeline(input_source, participant_id, is_youtube=False):
 
         vlm_descriptions.append(scene_description)
 
+
     # ---------------------------------
     # LLM REFINEMENT
     # ---------------------------------
@@ -119,7 +121,7 @@ def run_pipeline(input_source, participant_id, is_youtube=False):
         start = max(0, i - past)
         end = i
 
-        local_context = "".join(
+        local_context = "\n".join(
             f"Previous scene {j + 1}: {vlm_descriptions[j]}"
             for j in range(start, end)
         )
@@ -135,15 +137,17 @@ def run_pipeline(input_source, participant_id, is_youtube=False):
 
         if narration == "":
             continue
-
+        # semantic similarity check
+        # compare with previously KEPT subtitle, not just previous chunk
         if previous_subtitles:
-            last = previous_subtitles[-1]
+            last_kept = previous_subtitles[-1]
 
-            if similar(narration, last) > 0.80:
+            if are_similar(narration, last_kept, threshold=0.70):
+                print(f"Skipped similar subtitle at scene {i + 1}")
                 continue
 
         print("LLM:", narration)
-        print("HISTORY:", history)
+        #print("HISTORY:", history)
         print("LOCAL COTEXT", local_context)
         print("-" * 40)
 

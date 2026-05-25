@@ -38,23 +38,20 @@ IMPORTANT:
 - NEVER copy actions or objects from PREVIOUS RAW CONTEXT unless they are visible in CURRENT SCENE.
 
 RULES:
-- Preserve important visible details from CURRENT SCENE.
-- Do not invent emotions, intentions or atmosphere.
-- Do not infer things not clearly visible.
+- Preserve important details from CURRENT SCENE.
+- DO NOT REPEAT previous subtitles using different wording.
+- Do not invent names
+- Do not infer things not clearly described.
 - Do not mention black background
 - Do not add cinematic language.
-- Do not describe lighting unless clearly important.
+- Do not describe lighting.
 - Do not use words like:
   "appears", "seems", "possibly", "likely", "contemplatively", "engaged".
 - Prefer concrete actions and objects.
 - Use simple present tense.
 - Use English language.
 - Use natural pronouns when identity is clear.
-- Mention clothing only:
-  - when first introducing a person
-  - or when needed for clarity.
 - Keep wording natural and concise.
-- Avoid repeating previous subtitles using different wording.
 - Include visible text only if important.
 - Output ONLY the final sentence.
 - Maximum {max_words} words.
@@ -67,7 +64,7 @@ RULES:
         model="qwen2.5:14b",
         messages=[{"role": "user", "content": prompt}],
         options={
-            "num_predict": 80,
+            "num_predict": 40,
             "temperature": 0.1,
             "repeat_penalty": 1.3
         }

@@ -11,8 +11,8 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 MODEL_PATH = ROOT_DIR / "models" / "en_GB-alba-medium.onnx"
 CONFIG_PATH = ROOT_DIR / "models" / "en_GB-alba-medium.onnx.json"
 
-GLOBAL_OFFSET = 1.0   # ⏱ delay at start (seconds)
-AD_VOLUME = 6.0       # 🔊 boost AD loudness
+GLOBAL_OFFSET = 2.0   # delay at start (seconds)
+AD_VOLUME = 6.0       # boost AD loudness
 
 def time_to_seconds(t: timedelta):
     return t.total_seconds()
@@ -34,7 +34,7 @@ def generate_ad_audio(srt_path, output_path):
 
     wav_files = []
 
-    print("🔊 Generating speech...")
+    print("Generating speech...")
 
     current_time = 0.0  # prevent overlap
 
@@ -52,7 +52,7 @@ def generate_ad_audio(srt_path, output_path):
         with wave.open(str(temp_file), "rb") as wf:
             duration = wf.getnframes() / wf.getframerate()
 
-        # ⛔ prevent overlap + add global delay
+        # prevent overlap + add global delay
         actual_start = max(start_time, current_time)
         actual_start += GLOBAL_OFFSET
 
@@ -60,7 +60,7 @@ def generate_ad_audio(srt_path, output_path):
 
         current_time = actual_start + duration + 0.2  # small gap
 
-    print("🧩 Building timeline...")
+    print("Building timeline...")
 
     inputs = []
     filters = []
@@ -80,7 +80,7 @@ def generate_ad_audio(srt_path, output_path):
         + f";{mix_inputs}amix=inputs={len(wav_files)}:duration=longest"
     )
 
-    print("🎧 Rendering final audio...")
+    print("Rendering final audio...")
 
     cmd = [
         "ffmpeg",

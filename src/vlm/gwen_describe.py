@@ -24,6 +24,8 @@ processor = AutoProcessor.from_pretrained(model_name)
 def describe_scene(frame_paths):
 
     #- Do not guess emotions or intentions
+    #- People (include gender if clearly visible)
+    #- Visible physical traits (e.g. hair color, clothing, disabilities) if clear
 
     images = [Image.open(p).convert("RGB") for p in frame_paths]
     prompt = f"""
@@ -32,8 +34,7 @@ You are given several keyframes from the same scene. They show how the scene evo
 Describe the scene for visually impaired viewers.
 
 Focus on:
-- People (include gender if clearly visible)
-- Visible physical traits (e.g. hair color, clothing, disabilities) if clear
+- People (include gender)
 - Main actions
 - Main objects
 - Written text containing important information
@@ -51,7 +52,7 @@ Rules:
 - Do NOT mention "video", "scene", "frame", "caption", etc
 
 Output:
-One short English sentences.
+ONE short English sentence.
 """
 
     messages = [
@@ -78,7 +79,7 @@ One short English sentences.
 
     output = model.generate(
         **inputs,
-        max_new_tokens=120,
+        max_new_tokens=100,
         do_sample=False,
         repetition_penalty=1.15,
         no_repeat_ngram_size=3,
