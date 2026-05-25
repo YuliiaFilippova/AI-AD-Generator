@@ -81,3 +81,23 @@ yarn-error.log*
 # Misc
 # -----------------------------
 *.log
+.DS_Store
+.idea/
+models/
+backend/app/jobs/
+backend/app/evaluations.json
+__pycache__/
+*.pyc
+data/
+outputs/
+generated/
+*.mp4
+*.mov
+*.avi
+*.wav
+*.mp3
+*.srt
+*.vtt
+frontend/node_modules/
+.venv/
+venv/
