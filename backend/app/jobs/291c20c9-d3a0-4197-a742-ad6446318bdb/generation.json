@@ -1,0 +1,11 @@
+{
+  "job_id": "291c20c9-d3a0-4197-a742-ad6446318bdb",
+  "input_source": "https://www.youtube.com/watch?v=Fzn_AKN67oI",
+  "participant_id": "3cba0c1d-6279-4a18-b4ce-ed11bad68201",
+  "outputs": {
+    "video_url": "/jobs/291c20c9-d3a0-4197-a742-ad6446318bdb/output/video_with_ad.mp4",
+    "audio_url": "/jobs/291c20c9-d3a0-4197-a742-ad6446318bdb/output/combined_audio.wav",
+    "srt_url": "/jobs/291c20c9-d3a0-4197-a742-ad6446318bdb/output/output.srt",
+    "vtt_url": "/jobs/291c20c9-d3a0-4197-a742-ad6446318bdb/output/output.vtt"
+  }
+}
